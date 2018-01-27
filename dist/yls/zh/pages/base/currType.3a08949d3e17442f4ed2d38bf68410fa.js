@@ -45,7 +45,7 @@
       };
       return {
         //模版主键
-        funnode: 'ss',
+        funnode: 'solution',
         nexuskey: 'CURRTYPE',
         delId: '',
         pk_currType: '',

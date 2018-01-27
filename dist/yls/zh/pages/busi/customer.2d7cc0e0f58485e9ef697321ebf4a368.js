@@ -9669,7 +9669,7 @@
       data: function data() {
           var oThis = this;
           return {
-              title: 'ss',
+              title: 'solution',
               addButton: '新增',
               highsearchParam: '{}',
               funnode: "BT003",

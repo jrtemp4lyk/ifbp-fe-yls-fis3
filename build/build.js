@@ -40,17 +40,18 @@ rm(path.resolve(__dirname, '../dist'), err => {
       configPath: path.resolve(__dirname, '../fis-conf.js'),
     })
 
-    const buildFun = function(lang) {
+    const buildFun = function (lang) {
       // 遍历pages下面的index.js，将对应的文件合并
       const srcBasePath = __dirname + '/../src/apps/pages'
-      const distBasePath = __dirname + '/../dist/'  + pkgName +  '/' + lang 
-      const distPagesBasePath = __dirname + '/../dist/'  + pkgName +'/' + lang + '/pages'
-      const distCommonBasePath = __dirname + '/../dist/' + pkgName +'/' + lang + '/common'
-      const outputBasePath = __dirname + '/../dist/' + pkgName + '/output/' + lang 
-      const outputPagesBasePath = __dirname + '/../dist/' + pkgName + '/output/' + lang +'/pages'
+      let langStr = lang ? '/' + lang : '';
+      const distBasePath = __dirname + '/../dist/' + pkgName + langStr
+      const distPagesBasePath = __dirname + '/../dist/' + pkgName + langStr + '/pages'
+      const distCommonBasePath = __dirname + '/../dist/' + pkgName + langStr + '/common'
+      const outputBasePath = __dirname + '/../dist/' + pkgName + '/output' + langStr
+      const outputPagesBasePath = __dirname + '/../dist/' + pkgName + '/output' + langStr + '/pages'
       let relObj = {} // 用于产出config.js
       relArr = relObj[pkgName] = {}
-      relArr.curLang = lang;
+      relArr.curLang = lang ? lang : '';
       relArr['routers'] = []
 
       const parsePagesFile = function (curPath, name) {
@@ -157,8 +158,11 @@ rm(path.resolve(__dirname, '../dist'), err => {
       const endsWith = function (str, endStr) {
         return str.slice(-endStr.length) == endStr
       }
-
-      fs.mkdirSync(path.resolve(distBasePath))
+      try{
+        fs.mkdirSync(path.resolve(distBasePath))
+      }catch(e){
+        
+      }
       fs.mkdirSync(path.resolve(distPagesBasePath))
       fs.mkdirSync(path.resolve(distPagesBasePath + '/base'))
       fs.mkdirSync(path.resolve(distPagesBasePath + '/busi'))
@@ -244,16 +248,21 @@ rm(path.resolve(__dirname, '../dist'), err => {
           // console.log('删除空文件夹'+fileUrl+'成功');
         }
       }
-      emptyDir(path.resolve(__dirname, '../dist/' + pkgName + '/output/' + lang  + '/'));
-      rmEmptyDir(path.resolve(__dirname, '../dist/' + pkgName + '/output/'+ lang  + '/'));
+      emptyDir(path.resolve(__dirname, '../dist/' + pkgName + '/output' + langStr + '/'));
+      rmEmptyDir(path.resolve(__dirname, '../dist/' + pkgName + '/output' + langStr + '/'));
       console.log('Build completed' + lang);
     }
 
     let langues = config.build.languages;
 
-    for(let i = 0;i < langues.length;i++){
-      buildFun(langues[i]);
+    if (langues.length > 0) {
+      for (let i = 0; i < langues.length; i++) {
+        buildFun(langues[i]);
+      }
+    } else {
+      buildFun();
     }
+
 
     spinner.stop()
     process.exit()
